@@ -2,7 +2,8 @@ import React from 'react'
 import { Routes,Route } from 'react-router-dom'
 import Home from '../pages/Home'
 import SignUp from '../pages/SignUp'
-import Login from '../pages/Login'
+import Login from '../pages/login'
+
 
 const UserRoutes = () => {
   return (

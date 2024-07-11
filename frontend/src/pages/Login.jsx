@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import '../scss/styles/login.scss'
-import axios from '../utils/axios'
+import axios from '../utils/axios.js'
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -19,7 +19,7 @@ const Login = () => {
         });
         console.log(response.data);
         toast.success("Login successful!");
-        navigate('/'); // Navigate to the home page
+        navigate('/'); 
     } catch (error) {
         console.error(error);
         toast.error("Login failed!"); 
