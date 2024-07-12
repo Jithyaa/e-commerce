@@ -44,8 +44,13 @@ MERN Ecommerce is a full-stack ecommerce platform built using the MERN (MongoDB,
 
    ```bash
    git clone https://github.com/Jithyaa/e-commerce
+   cd backend - npm install
+   cd frontend - npm install
    
 2. Then simply start the docker compose:
+    - Ensure Docker is installed and running on your machine.
+    - Clone both repositories and navigate to the root directory.
+    - Run the following command to build and start the containers:
 
    ```bash
-   $ docker compose -f dockercompose.yml up
+   docker-compose up --build
