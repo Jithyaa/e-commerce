@@ -1,92 +1,117 @@
 import React, { useState } from 'react'
 import '../scss/styles/addproduct.scss'
+import axios from 'axios';
+import {useDispatch} from 'react-redux'
+import { addProductStart,addProductSuccess,addProductFailure,fetchProducts } from '../redux/produtRedux';
+import { useNavigate } from 'react-router-dom';
 
 const AddProduct = () => {
-    const [photos, setPhotos] = useState([]);
-    const [variants, setVariants] = useState(['']);
+    const [photo, setPhoto] = useState(null);
+    const [product, setProduct] = useState({ title: '', desc: '', price: '', categories: 'women', inStock: 'true' });
+   const dispatch = useDispatch();
 
-    const handlePhotoChange = (e, index) => {
-        const file = e.target.files[0];
-        if (file) {
-            const newPhotos = [...photos];
-            newPhotos[index] = URL.createObjectURL(file);
-            setPhotos(newPhotos);
-        }
-    };
+   const navigate = useNavigate()
 
-    const handleVariantChange = (e, index) => {
-        const newVariants = [...variants];
-        newVariants[index] = e.target.value;
-        setVariants(newVariants);
-    };
+  const handlePhotoChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setPhoto(URL.createObjectURL(file));
+    }
+  };
 
-    const addVariantField = () => {
-        setVariants([...variants, '']);
-    };
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setProduct({ ...product, [name]: value });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    dispatch(addProductStart());
+    try {
+      await axios.get('/api/products', product);
+      console.log("kkkk",product);
+      dispatch(addProductSuccess());
+      dispatch(fetchProducts());  
+      navigate('/admin/product')
+    } catch (err) {
+      dispatch(addProductFailure());
+    }
+  };
 
     return (
-        <div className="add-product">
-            <div className="add-product__header">
-                <h1>Add Product</h1>
+        <div className="newProduct">
+        <h1 className="addProductTitle">New Product</h1>
+        <form className="addProductForm" onSubmit={handleSubmit}>
+          <div className="addProductItem">
+            <label>Image</label>
+            <div className="photo-upload">
+              <div className="photo-upload__item">
+                <input
+                  type="file"
+                  id="photo"
+                  accept="image/*"
+                  onChange={handlePhotoChange}
+                />
+                <label htmlFor="photo">
+                  {photo ? (
+                    <img src={photo} alt="Product" />
+                  ) : (
+                    <span>Add Photo</span>
+                  )}
+                </label>
+              </div>
             </div>
-            <div className="add-product__form">
-                <div className="form-group">
-                    <label>Product Name</label>
-                    <input type="text" />
-                </div>
-                <div className="form-group">
+          </div>
+          <div className="addProductItem">
+            <label>Title</label>
+            <input
+              name="title"
+              type="text"
+              placeholder="Apple Airpods"
+              value={product.title}
+              onChange={handleChange}
+            />
+          </div>
+          <div className="addProductItem">
             <label>Description</label>
             <textarea
-              rows="5" // Adjust rows as needed
+              name="desc"
+              rows="5"
+              placeholder="description..."
+              value={product.desc}
+              onChange={handleChange}
               className="description-input"
             ></textarea>
           </div>
-                <div className="form-group">
-                    <label>Price</label>
-                    <input type="text" />
-                </div>
-                <div className="form-group">
-                    <label>Photos</label>
-                    <div className="photo-upload">
-                        {Array.from({ length: 4 }).map((_, index) => (
-                            <div key={index} className="photo-upload__item">
-                                <input
-                                    type="file"
-                                    id={`photo-${index}`}
-                                    accept="image/*"
-                                    onChange={(e) => handlePhotoChange(e, index)}
-                                />
-                                <label htmlFor={`photo-${index}`}>
-                                    {photos[index] ? (
-                                        <img src={photos[index]} alt="Product" />
-                                    ) : (
-                                        <span>Add Photo</span>
-                                    )}
-                                </label>
-                            </div>
-                        ))}
-                    </div>
-                </div>
-                <div className="form-group">
-                    <label>Variants</label>
-                    {variants.map((variant, index) => (
-                        <input
-                            key={index}
-                            type="text"
-                            value={variant}
-                            onChange={(e) => handleVariantChange(e, index)}
-                            placeholder={`Variant ${index + 1}`}
-                        />
-                    ))}
-                    <button type="button" onClick={addVariantField}>
-                        Add Variant
-                    </button>
-                </div>
-                <button type="button" className="continue-button">
-                    Continue
-                </button>
-            </div>
-        </div>
+          <div className="addProductItem">
+            <label>Price</label>
+            <input
+              name="price"
+              type="number"
+              placeholder="100"
+              value={product.price}
+              onChange={handleChange}
+            />
+          </div>
+          <div className="addProductItem">
+            <label>Categories</label>
+            <select name="categories" value={product.categories} onChange={handleChange}>
+              <option value="women">Women</option>
+              <option value="men">Men</option>
+            </select>
+          </div>
+          <div className="addProductItem">
+            <label>Stock</label>
+            <select name="inStock" value={product.inStock} onChange={handleChange}>
+              <option value="true">Yes</option>
+              <option value="false">No</option>
+            </select>
+          </div>
+          <button type="submit" className="addProductButton">
+            Create
+          </button>
+        </form>
+      </div>
     );
-};
+  };
 export default AddProduct

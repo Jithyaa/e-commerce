@@ -9,18 +9,18 @@ const Footer = () => {
     <div className="footercontainer">
       <div className="grid">
         <div className="column">
-          <h5 className="text-lg font-bold mb-4">About Datify❤️</h5>
+          <h5 className="text-lg font-bold mb-4">JS STORE</h5>
           <p className="text-sm">
-            Datify is a leading dating platform dedicated to connecting people from all walks of life. Join us to find meaningful connections and start your love journey today.
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris consectetur aliquet sodales. Suspendisse vitae leo quam. Pellentesque efficitur pellentesque nunc
           </p>
         </div>
         <div className="column">
           <h5 className="text-lg font-bold mb-4">Quick Links</h5>
           <ul className="text-sm space-y-2">
-            <li><a href="/user/about" className="hover:underline">About Us</a></li>
-            <li><a href="/user/contact" className="hover:underline">Contact Us</a></li>
-            <li><a href="/terms" className="hover:underline">Terms of Service</a></li>
-            <li><a href="/privacy" className="hover:underline">Privacy Policy</a></li>
+            <li><a href="#" className="hover:underline">About Us</a></li>
+            <li><a href="#" className="hover:underline">Contact Us</a></li>
+            <li><a href="#" className="hover:underline">Terms of Service</a></li>
+            <li><a href="#" className="hover:underline">Privacy Policy</a></li>
           </ul>
         </div>
         <div className="column">

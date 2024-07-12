@@ -1,55 +1,108 @@
 import * as React from 'react';
 import Box from '@mui/material/Box';
 import { DataGrid } from '@mui/x-data-grid';
+import IconButton from '@mui/material/IconButton';
+import Tooltip from '@mui/material/Tooltip';
+import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/Delete';
+import axios from 'axios';
+import { getProductStart, getProductSuccess, getProductFailure } from '../redux/produtRedux';
+import { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 
 const columns = [
   { field: 'id', headerName: 'ID', width: 90 },
   {
-    field: 'firstName',
-    headerName: 'First name',
+    field: 'title',
+    headerName: 'Title',
     width: 150,
     editable: true,
   },
   {
-    field: 'lastName',
-    headerName: 'Last name',
+    field: 'desc',
+    headerName: 'Description',
     width: 150,
     editable: true,
   },
   {
-    field: 'age',
-    headerName: 'Age',
+    field: 'price',
+    headerName: 'Price',
     type: 'number',
     width: 110,
     editable: true,
   },
   {
-    field: 'fullName',
-    headerName: 'Full name',
+    field: 'inStock',
+    headerName: 'Stock',
+    width: 160,
+  },
+  {
+    field: 'action',
+    headerName: 'Action',
     description: 'This column has a value getter and is not sortable.',
     sortable: false,
     width: 160,
-    valueGetter: (value, row) => `${row.firstName || ''} ${row.lastName || ''}`,
+    renderCell: (params) => (
+      <>
+        <Tooltip title="Edit">
+          <IconButton
+            color="primary"
+            onClick={() => handleEdit(params.row.id)}
+          >
+            <EditIcon />
+          </IconButton>
+        </Tooltip>
+        <Tooltip title="Delete">
+          <IconButton
+            color="secondary"
+            onClick={() => handleDelete(params.row.id)}
+          >
+            <DeleteIcon />
+          </IconButton>
+        </Tooltip>
+      </>
+    ),
   },
 ];
 
-const rows = [
-  { id: 1, lastName: 'Snow', firstName: 'Jon', age: 14 },
-  { id: 2, lastName: 'Lannister', firstName: 'Cersei', age: 31 },
-  { id: 3, lastName: 'Lannister', firstName: 'Jaime', age: 31 },
-  { id: 4, lastName: 'Stark', firstName: 'Arya', age: 11 },
-  { id: 5, lastName: 'Targaryen', firstName: 'Daenerys', age: null },
-  { id: 6, lastName: 'Melisandre', firstName: null, age: 150 },
-  { id: 7, lastName: 'Clifford', firstName: 'Ferrara', age: 44 },
-  { id: 8, lastName: 'Frances', firstName: 'Rossini', age: 36 },
-  { id: 9, lastName: 'Roxie', firstName: 'Harvey', age: 65 },
-];
+
+
 
 export default function DataGridDemo() {
+  const dispatch = useDispatch();
+  const products = useSelector((state) => state.product.products);
+  useEffect(() => {
+    const fetchProducts = async () => {
+      dispatch(getProductStart());
+      try {
+        const res = await axios.get('/api/products');
+        dispatch(getProductSuccess(res.data));
+      } catch (err) {
+        dispatch(getProductFailure());
+      }
+    };
+    fetchProducts();
+  }, [dispatch]);
+
+  
+const handleEdit = (productId) => {
+  const selectedProduct = products.find(product => product.id === productId);
+  if (selectedProduct) {
+    history.push(`/addproduct/${selectedProduct.id}`, { product: selectedProduct });
+  }
+};
+
+const handleDelete = (id) => {
+  if (id) {
+    console.log('Delete row with id:', id);
+  } else {
+    console.error('Cannot delete row without id:', id);
+  }
+};
   return (
-    <Box sx={{ height: 400, width: '100%', backgroundColor:'#f8f8f8' }}>
+    <Box sx={{ height: 400, width: '100%', backgroundColor: '#f8f8f8' }}>
       <DataGrid
-        rows={rows}
+        rows={products}
         columns={columns}
         initialState={{
           pagination: {
