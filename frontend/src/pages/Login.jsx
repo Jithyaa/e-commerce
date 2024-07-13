@@ -25,6 +25,9 @@ const Login = () => {
         toast.error("Login failed!"); 
     }
 };
+const handleRegisterRedirect = () => {
+    navigate('/signup'); // Adjust the path as needed
+  };
   return (
     <div className="login-container">
             <form className="login-form" onSubmit={handleSubmit}>
@@ -50,6 +53,9 @@ const Login = () => {
                     />
                 </div>
                 <button type="submit" className="login-button">Login</button>
+                <div className="register-link">
+          <p>Don't have an account? <span onClick={handleRegisterRedirect} className="register-link__text">Register</span></p>
+        </div>
             </form>
         </div>
     );

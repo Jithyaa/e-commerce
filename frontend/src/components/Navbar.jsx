@@ -20,15 +20,16 @@ const Navbar = () => {
         <h1 className="logo">JS STORE</h1>
       </div>
       <div className="right">
+      <Link to="/allproduct" className="menu-item">PRODUCTS</Link>
       <Link to="/signup" className="menu-item">REGISTER</Link>
       <Link to="/login" className="menu-item">SIGN IN</Link>
-        <div className="menu-item">
+        {/* <div className="menu-item">
           <IconButton aria-label="cart">
             <Badge badgeContent={4} color="secondary">
               <ShoppingCartIcon />
             </Badge>
           </IconButton>
-        </div>
+        </div> */}
       </div>
     </div>
   </div>

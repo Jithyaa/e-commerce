@@ -1,33 +1,50 @@
-import Product from "../models/productModel";
+import Product from "../models/productModel.js";
 
 export const getProducts = async (req, res) => {
     try {
-        const products = await Product.find({});
-        res.json(products);
+        const products = await Product.aggregate([
+            {
+                $unwind: '$variants', // Unwind the variants array
+            },
+            {
+                $project: {
+                    _id: 1,
+                    title: 1,
+                    desc: 1,
+                    categories: 1,
+                    'variantId': '$variants._id',
+                    'size': '$variants.size',
+                    'color': '$variants.color',
+                    'price': '$variants.price',
+                    'inStock': '$variants.inStock',
+                    'img': '$variants.img',
+                },
+            },
+        ]);
+
+        res.status(200).json(products);
     } catch (error) {
+        console.error('Error fetching products:', error);
         res.status(500).json({ message: 'Server Error' });
     }
 };
 
 
 export const createProduct = async (req, res) => {
-    const { title, desc, img, categories, size, color, price, inStock } = req.body;
+    const { title, desc, categories, variants } = req.body;
+
     try {
-        const product = new Product({
+        const product = await Product.create({
             title,
             desc,
-            img,
             categories,
-            size,
-            color,
-            price,
-            inStock,
+            variants,
         });
 
         const createdProduct = await product.save();
         res.status(201).json(createdProduct);
     } catch (error) {
-        res.status(500).json({ message: 'Server Error' });
+        res.status(500).json({ message: error.message });
     }
 };
 

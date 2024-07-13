@@ -5,13 +5,14 @@ import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
-import axios from 'axios';
+import axios from '../utils/axios';
 import { getProductStart, getProductSuccess, getProductFailure } from '../redux/produtRedux';
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+// import { useHistory } from 'react-router-dom';
 
 const columns = [
-  { field: 'id', headerName: 'ID', width: 90 },
+  { field: '_id', headerName: 'ID', width: 90 },
   {
     field: 'title',
     headerName: 'Title',
@@ -34,7 +35,24 @@ const columns = [
   {
     field: 'inStock',
     headerName: 'Stock',
-    width: 160,
+    width: 100,
+  },
+  {
+    field: 'size',
+    headerName: 'Size',
+    width: 130,
+  },
+  {
+    field: 'color',
+    headerName: 'Color',
+    width: 140,
+    renderCell: (params) => (
+      <>
+        <div style={{ color: params.row.color, backgroundColor: params.row.color }}>
+          .
+        </div>
+      </>
+    ),
   },
   {
     field: 'action',
@@ -47,7 +65,7 @@ const columns = [
         <Tooltip title="Edit">
           <IconButton
             color="primary"
-            onClick={() => handleEdit(params.row.id)}
+            onClick={() => handleEdit(params.row._id)}
           >
             <EditIcon />
           </IconButton>
@@ -55,7 +73,7 @@ const columns = [
         <Tooltip title="Delete">
           <IconButton
             color="secondary"
-            onClick={() => handleDelete(params.row.id)}
+            onClick={() => handleDelete(params.row._id)}
           >
             <DeleteIcon />
           </IconButton>
@@ -65,12 +83,23 @@ const columns = [
   },
 ];
 
+const handleDelete = async (id) => {
+  if (id) {
+    try {
+      await axios.delete(`/products/deleteProduct/${id}`);
+      console.log('Deleted variant with id:', id);
+    } catch (err) {
+      console.error('Failed to delete variant:', err);
+    }
+  } else {
+    console.error('Cannot delete variant without id:', id);
+  }
+};
 
-
-
-export default function DataGridDemo() {
+export default function DataGridDemo({ products }) {
   const dispatch = useDispatch();
-  const products = useSelector((state) => state.product.products);
+  // const history = useHistory();
+
   useEffect(() => {
     const fetchProducts = async () => {
       dispatch(getProductStart());
@@ -84,25 +113,24 @@ export default function DataGridDemo() {
     fetchProducts();
   }, [dispatch]);
 
-  
-const handleEdit = (productId) => {
-  const selectedProduct = products.find(product => product.id === productId);
-  if (selectedProduct) {
-    history.push(`/addproduct/${selectedProduct.id}`, { product: selectedProduct });
-  }
-};
+  const handleEdit = (productId) => {
+    const selectedProduct = products.find(product => product._id === productId);
+    if (selectedProduct) {
+      // history.push(`/addproduct/${selectedProduct._id}`, { product: selectedProduct });
+    }
+  };
 
-const handleDelete = (id) => {
-  if (id) {
-    console.log('Delete row with id:', id);
-  } else {
-    console.error('Cannot delete row without id:', id);
-  }
-};
+
+
+  const rows = products.map(product => ({
+    ...product,
+    id: product._id,
+  }));
+
   return (
     <Box sx={{ height: 400, width: '100%', backgroundColor: '#f8f8f8' }}>
       <DataGrid
-        rows={products}
+        rows={rows}
         columns={columns}
         initialState={{
           pagination: {

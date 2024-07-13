@@ -89,6 +89,7 @@ export const fetchProducts = () => async (dispatch) => {
     dispatch(getProductStart());
     try {
       const res = await axios.get('/api/products');
+      console.log("⭐⭐",res.data)
       dispatch(getProductSuccess(res.data));
     } catch (err) {
       dispatch(getProductFailure());
