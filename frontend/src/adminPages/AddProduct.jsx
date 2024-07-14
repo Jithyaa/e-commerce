@@ -49,7 +49,7 @@ const AddProduct = () => {
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
-
+console.log("jimbum ba",variants)
   const handleProductImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -99,9 +99,9 @@ const AddProduct = () => {
         },
 
       });
-
-      dispatch(addProductSuccess(response.data));
-      navigate('/admin/product');
+      if(response.data.success){
+        navigate('/admin/product');
+      }
     } catch (err) {
       dispatch(addProductFailure());
     }
@@ -117,11 +117,34 @@ const AddProduct = () => {
     setCurrentColorIndex(null);
   };
 
-  const handleVariantImageChange = (index, e) => {
+  const handleVariantImageChange = async (index, e) => {
+    let link;
     const file = e.target.files[0];
-    const updatedVariants = [...variants];
-    updatedVariants[index].img = URL.createObjectURL(file);
-    setVariants(updatedVariants);
+    const data = new FormData();
+    data.append("file",file);
+    data.append("upload_preset","ektlpubi");
+    data.append("cloud_name","dkvlosdyw");
+    try {
+      const response = await fetch("https://api.cloudinary.com/v1_1/dkvlosdyw/image/upload", {
+        method: "POST",
+        body: data
+      });
+  
+      if (!response.ok) {
+        throw new Error('Failed to upload image');
+      }
+  
+      const imageData = await response.json();
+      const link = imageData.url;
+  
+      const updatedVariants = [...variants];
+      updatedVariants[index].img = link;
+      setVariants(updatedVariants);
+  
+    } catch (error) {
+      console.error('Error uploading image:', error);
+      // Handle error state or alert the user
+    }
 
   }
 

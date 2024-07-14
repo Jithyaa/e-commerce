@@ -8,9 +8,9 @@ router.get("/hi",(req,res)=>{
     res.send("API is working")
 })
 router.post('/createProduct', createProduct);
-// router.put('/:id', updateProduct);
-router.delete('/:id', deleteProduct);
-// router.get('/:id', getProduct);
+router.post('/deleteVariant', deleteProduct);
+router.post('/getProduct', getProduct);
+router.put('/:id', updateProduct);
 
 export default router
 

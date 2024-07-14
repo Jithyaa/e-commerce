@@ -10,9 +10,11 @@ const Product = () => {
     navigate('/admin/add-product')
   }
   const [products,setProducts]=useState([]);
+  const [fetched,setFetched]=useState(false);
   useEffect(()=>{
     fetchProducts()
-  },[])
+  },[fetched])
+  console.log("🔥🔥🔥",fetched)
   async function fetchProducts(){
     let response = await axios.get("/products");
     let data = await response.data;
@@ -25,7 +27,7 @@ const Product = () => {
     <div className="product__header">
           <button className="product__add-button" onClick={handleSubmit}>Add Product</button>
         </div>
-     <DataGridDemo products={products}/>
+     <DataGridDemo products={products} setFetched={setFetched}/>
     </div>
   </div>
   )
